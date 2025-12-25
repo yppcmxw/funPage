@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>心愿便签墙 - 顺序叠加版</title>
+    <style>
+        :root {
+            --bg-grad: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            --pink-accent: #ff758c;
+        }
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg-grad);
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+        }
+
+        #container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* 响应式卡片样式 */
+        .card {
+            position: absolute;
+            width: 90px;
+            height: 48px;
+            padding: 8px 4px;
+            background: #fff;
+            border-radius: 3px;
+            /* 增强阴影，使叠加感更明显 */
+            box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: #444;
+            will-change: transform;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            opacity: 0;
+            background: linear-gradient(145deg, #ffffff 0%, #f9f9f9 100%);
+            box-sizing: border-box;
+        }
+
+        @media (min-width: 768px) {
+            .card {
+                width: 125px;
+                height: 65px;
+                font-size: 14px;
+            }
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .c1::after {
+            background: #ffadad;
+        }
+
+        .c1 {
+            border-left: 3px solid #ffadad;
+        }
+
+        .c2::after {
+            background: #9bf6ff;
+        }
+
+        .c2 {
+            border-left: 3px solid #9bf6ff;
+        }
+
+        .c3::after {
+            background: #ffd6a5;
+        }
+
+        .c3 {
+            border-left: 3px solid #ffd6a5;
+        }
+
+        .c4::after {
+            background: #caffbf;
+        }
+
+        .c4 {
+            border-left: 3px solid #caffbf;
+        }
+
+        /* 全屏点击提示 */
+        #hint-overlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            /* 提示永远在最前 */
+            text-align: center;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 1s ease;
+            width: 100%;
+        }
+
+        .hint-text {
+            color: var(--pink-accent);
+            font-size: 18px;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.7);
+            display: inline-block;
+            padding: 12px 28px;
+            border-radius: 40px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            animation: breathe 2s infinite ease-in-out;
+        }
+
+        @keyframes breathe {
+
+            0%,
+            100% {
+                opacity: 0.7;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+        }
+
+        /* 抽卡展示层 */
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(15px);
+            z-index: 10000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        #big-card {
+            width: 85%;
+            max-width: 350px;
+            height: 180px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 26px;
+            color: #333;
+            padding: 30px;
+            text-align: center;
+            border-left: 10px solid var(--pink-accent);
+            transform: scale(0.8);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        #overlay.active #big-card {
+            transform: scale(1);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="container"></div>
+
+    <div id="hint-overlay">
+        <div class="hint-text">点击屏幕，开启惊喜 ✨</div>
+    </div>
+
+    <div id="overlay">
+        <div id="big-card"></div>
+    </div>
+
+    <script>
+        const container = document.getElementById('container');
+        const hintOverlay = document.getElementById('hint-overlay');
+        const overlay = document.getElementById('overlay');
+        const bigCard = document.getElementById('big-card');
+
+        const messages = ["好好爱自己", "期待下次见面", "我想你了", "顺顺利利", "保持好心情", "早点休息", "多喝热水", "你是最棒的", "未来可期", "梦想成真", "元气满满", "生活明朗", "记得吃早餐", "天天开心", "好运连连", "万事胜意", "平安喜乐", "心想事成", "不负韶华"];
+
+        const cardCount = 180;
+        let cards = [];
+        let state = 'forming';
+
+        function init () {
+            for (let i = 0; i < cardCount; i++) {
+                const card = document.createElement('div');
+                card.className = `card c${(i % 4) + 1}`;
+                card.innerHTML = `<span>${messages[i % messages.length]}</span>`;
+
+                // 穿插入场：左右两侧交替
+                const side = i % 2 === 0 ? -300 : window.innerWidth + 300;
+                const startY = Math.random() * window.innerHeight;
+
+                card.style.transform = `translate3d(${side}px, ${startY}px, 0) rotate(${side > 0 ? 90 : -90}deg)`;
+                container.appendChild(card);
+                cards.push(card);
+            }
+            setTimeout(startSequentialForming, 400);
+        }
+
+        function startSequentialForming () {
+            const screenW = window.innerWidth;
+            const screenH = window.innerHeight;
+
+            // 动态适配心形比例
+            const scale = Math.min(screenW * 0.85, screenH * 0.65) / 32;
+            const centerX = screenW / 2;
+            const centerY = screenH / 2 - (scale * 1.5);
+
+            const totalTime = 10000; // 10秒全过程
+            const interval = totalTime / cardCount;
+
+            cards.forEach((card, i) => {
+                setTimeout(() => {
+                    const step = (i / cardCount) * 2 * Math.PI;
+                    const x = 16 * Math.pow(Math.sin(step), 3);
+                    const y = -(13 * Math.cos(step) - 5 * Math.cos(2 * step) - 2 * Math.cos(3 * step) - Math.cos(4 * step));
+
+                    const cWidth = card.offsetWidth;
+                    const cHeight = card.offsetHeight;
+
+                    const posX = centerX + x * scale - (cWidth / 2);
+                    const posY = centerY + y * scale - (cHeight / 2);
+
+                    // 对称旋转角度逻辑
+                    let rotation = x * 1.1;
+                    if (Math.abs(x) < 1.5) rotation = 0;
+
+                    card.style.opacity = '1';
+                    // 增加一点 transition 时长，让飞入更平滑
+                    card.style.transition = `transform 2.5s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 0.8s ease`;
+                    card.style.transform = `translate3d(${posX}px, ${posY}px, 0) rotate(${rotation}deg)`;
+
+                    // --- 核心修改：一张叠一张覆盖 ---
+                    // 层级直接等于索引 i，确保后来的卡片永远在最上方
+                    card.style.zIndex = i;
+
+                    if (i === cardCount - 1) {
+                        setTimeout(() => {
+                            state = 'waiting';
+                            hintOverlay.style.opacity = '1';
+                        }, 2500);
+                    }
+                }, i * interval);
+            });
+        }
+
+        function explode () {
+            state = 'exploding';
+            hintOverlay.style.opacity = '0';
+
+            cards.forEach((card, i) => {
+                const cWidth = card.offsetWidth;
+                const cHeight = card.offsetHeight;
+
+                // 随机爆炸到屏幕各处，甚至略微超出
+                const targetX = Math.random() * (window.innerWidth + 400) - 200;
+                const targetY = Math.random() * (window.innerHeight + 400) - 200;
+                const rotation = (Math.random() - 0.5) * 120;
+
+                card.style.transition = `transform 1.2s cubic-bezier(0.22, 1, 0.36, 1)`;
+                card.style.transform = `translate3d(${targetX}px, ${targetY}px, 0) rotate(${rotation}deg)`;
+
+                // 爆炸时打乱层级，增加错乱感
+                card.style.zIndex = Math.floor(Math.random() * cardCount);
+            });
+
+            setTimeout(() => {
+                state = 'exploded';
+                hintOverlay.querySelector('.hint-text').innerText = "点击抽取专属卡片 ✨";
+                hintOverlay.style.opacity = '1';
+            }, 1200);
+        }
+
+        function handleGlobalClick () {
+            if (state === 'waiting') {
+                explode();
+            } else if (state === 'exploded') {
+                if (overlay.classList.contains('active')) {
+                    overlay.classList.remove('active');
+                } else {
+                    const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+                    bigCard.innerText = randomMsg;
+                    overlay.classList.add('active');
+                }
+            }
+        }
+
+        document.body.addEventListener('click', (e) => {
+            if (overlay.classList.contains('active')) return;
+            handleGlobalClick();
+        });
+
+        overlay.onclick = (e) => {
+            overlay.classList.remove('active');
+            e.stopPropagation();
+        };
+
+        window.onresize = () => {
+            if (state === 'forming') location.reload();
+        };
+
+        window.onload = init;
+    </script>
+
+</body>
+
+</html>
