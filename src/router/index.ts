@@ -3,23 +3,23 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    name: 'Home',
-    component: () => import('../views/Home.vue'),
-  },
-  {
-    path: '/about',
-    name: 'About',
-    component: () => import('../views/About.vue'),
-  },
-  {
-    path: '/stickyNote',
     name: 'stickyNote',
     component: () => import('../views/stickyNote.vue'),
+  },
+  {
+    path: '/eatWhat',
+    name: 'eatWhat',
+    component: () => import('../views/eatWhat.vue'),
+  },
+  {
+    path: '/drawLots',
+    name: 'drawLots',
+    component: () => import('../views/drawLots.vue'),
   },
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory('/funPage'),
   routes:routes
 });
 

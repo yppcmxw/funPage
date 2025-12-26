@@ -41,21 +41,18 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var stickyNote_vue_1 = __importDefault(require("./views/stickyNote.vue"));
 var __VLS_ctx = {};
 var ___VLS_components;
 var ___VLS_directives;
-/** @type {__VLS_StyleScopedClasses['logo']} */ ;
-/** @type {__VLS_StyleScopedClasses['logo']} */ ;
-var __VLS_0 = stickyNote_vue_1.default;
+__VLS_asFunctionalElement(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+    id: "app",
+});
+var __VLS_0;
+/** @ts-ignore @type {typeof ___VLS_components.routerView | typeof ___VLS_components.RouterView} */
+routerView;
 // @ts-ignore
 var __VLS_1 = __VLS_asFunctionalComponent(__VLS_0, new __VLS_0({}));
 var __VLS_2 = __VLS_1.apply(void 0, __spreadArray([{}], __VLS_functionalComponentArgsRest(__VLS_1), false));
-var __VLS_5 = {};
-var __VLS_3;
 var __VLS_export = (await Promise.resolve().then(function () { return __importStar(require('vue')); })).defineComponent({});
 exports.default = {};

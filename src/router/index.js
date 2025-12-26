@@ -37,22 +37,22 @@ var vue_router_1 = require("vue-router");
 var routes = [
     {
         path: '/',
-        name: 'Home',
-        component: function () { return Promise.resolve().then(function () { return __importStar(require('../views/Home.vue')); }); },
-    },
-    {
-        path: '/about',
-        name: 'About',
-        component: function () { return Promise.resolve().then(function () { return __importStar(require('../views/About.vue')); }); },
-    },
-    {
-        path: '/stickyNote',
         name: 'stickyNote',
         component: function () { return Promise.resolve().then(function () { return __importStar(require('../views/stickyNote.vue')); }); },
     },
+    {
+        path: '/eatWhat',
+        name: 'eatWhat',
+        component: function () { return Promise.resolve().then(function () { return __importStar(require('../views/eatWhat.vue')); }); },
+    },
+    {
+        path: '/drawLots',
+        name: 'drawLots',
+        component: function () { return Promise.resolve().then(function () { return __importStar(require('../views/drawLots.vue')); }); },
+    },
 ];
 var router = (0, vue_router_1.createRouter)({
-    history: (0, vue_router_1.createWebHistory)(),
+    history: (0, vue_router_1.createWebHistory)('/funPage'),
     routes: routes
 });
 exports.default = router;

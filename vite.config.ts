@@ -5,4 +5,10 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig({
   base: '/funPage/', // 必须和仓库名一致
   plugins: [vue()],
+  resolve: {
+    alias: {
+      '@': '/src'
+    },
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.vue']
+  }
 })
