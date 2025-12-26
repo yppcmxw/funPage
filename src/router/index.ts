@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
-
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
@@ -20,8 +19,8 @@ const routes: RouteRecordRaw[] = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes,
+  history: createWebHistory(),
+  routes:routes
 });
 
-export default router;
+export default router
