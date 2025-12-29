@@ -52,7 +52,7 @@ var routes = [
     },
 ];
 var router = (0, vue_router_1.createRouter)({
-    history: (0, vue_router_1.createWebHistory)('/funPage'),
+    history: (0, vue_router_1.createWebHashHistory)('/funPage/'),
     routes: routes
 });
 exports.default = router;
