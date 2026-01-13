@@ -16,6 +16,16 @@ const routes: RouteRecordRaw[] = [
     name: 'drawLots',
     component: () => import('../views/drawLots.vue'),
   },
+  {
+    path: '/GestureParticle',
+    name: 'GestureParticle',
+    component: () => import('../views/GestureParticle.vue'),
+  },
+  {
+    path: '/StockChart',
+    name: 'StockChart',
+    component: () => import('../views/StockChart.vue'),
+  },
 ];
 
 const router = createRouter({
